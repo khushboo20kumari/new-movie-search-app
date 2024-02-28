@@ -1,30 +1,56 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+}));
 
 function Main() {
-
-    const [moviesData, setMoviesData] = useState([])
+    const [moviesData, setMoviesData] = useState([]);
 
     const fetchData = () => {
+        fetch('https://www.omdbapi.com/?s=star&apikey=480344f1&r=json')
+            .then(response => response.json())
+            .then(movieData => {
+                setMoviesData(movieData.Search);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    };
 
-        fetch("https://api.themoviedb.org/3/movie/top_rated?api_key=89eef3426d167c3c8145a257ebe68357&%27").then((res) => {
-            return res.json()
-
-        }).then((res) => {
-            setMoviesData(res)
-        })
-    }
-    
     useEffect(() => {
-        fetchData()
-    },[])
+        fetchData();
+    }, []);
 
-    console.log(moviesData, "data")
+    console.log(moviesData, "ddata");
 
     return (
-        <Box style={{ backgroundColor: "#373b69" }}>
+        <Box style={{marginTop:"130px"}}>
+            <Grid container spacing={2}>
+                {moviesData.map((item, index) => (
+                    <>
+                        <Grid item xs={6} md={6} sm={4} lg={4}>
+                            <Item>
+                                <img  style={{width:"90%",height:"400px"}} className="" src={item.Poster}></img>
+                            </Item>
+                        </Grid>
 
+                    </>
+                ))}
+            </Grid>
         </Box>
-    )
+    );
 }
+
 export default Main;
+
